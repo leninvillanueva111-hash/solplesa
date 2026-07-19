@@ -178,7 +178,7 @@
       <ellipse cx="98" cy="108" rx="14" ry="20" fill="#B98A6A" transform="rotate(35 98 108)"/>
     </svg>
     <p class="type-text" id="typeText"><span class="type-cursor">&nbsp;</span></p>
-    <img class="memory-photo" src="foto.png" alt="Un recuerdo de nosotros">
+    <img class="memory-photo" id="memoryPhoto" src="foto.jpeg" alt="Un recuerdo de nosotros">
     <div class="sig-name" id="sigName">— Lenin</div>
   </div>
 </section>
@@ -215,6 +215,19 @@ function openMessage(){
 bearBtn.addEventListener('click', openMessage);
 bearBtn.addEventListener('keydown', (e)=>{
   if(e.key === 'Enter' || e.key === ' '){ e.preventDefault(); openMessage(); }
+});
+
+/* Prueba automática de extensiones para la foto, por si el nombre no coincide exacto */
+const memoryPhoto = document.getElementById('memoryPhoto');
+const photoExtensions = ['jpeg','jpg','png','JPG','JPEG','PNG'];
+let extIdx = 0;
+memoryPhoto.addEventListener('error', function(){
+  extIdx++;
+  if(extIdx < photoExtensions.length){
+    memoryPhoto.src = 'foto.' + photoExtensions[extIdx];
+  } else {
+    memoryPhoto.style.display = 'none';
+  }
 });
 </script>
 
