@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tengo algo que decirte</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --cream:#FBF3EA;
+    --sand:#F0E2D0;
+    --terracotta:#C98B6B;
+    --terracotta-deep:#A96A4E;
+    --brown:#7A5C4A;
+    --ink:#4A3B31;
+    --ink-soft:#8A776A;
+  }
+  *{ margin:0; padding:0; box-sizing:border-box; }
+  html{ scroll-behavior:smooth; }
+  body{
+    min-height:100vh;
+    font-family:'Jost', sans-serif;
+    color: var(--ink);
+    overflow-x:hidden;
+    position:relative;
+    background: linear-gradient(160deg, var(--cream), var(--sand));
+  }
+  .serif{ font-family:'Cormorant Garamond', serif; }
+
+  body::before, body::after{
+    content:""; position:fixed; z-index:1; border-radius:50%;
+    filter: blur(80px); pointer-events:none;
+  }
+  body::before{
+    width:420px; height:420px; top:-120px; left:-120px;
+    background: radial-gradient(circle, rgba(201,139,107,0.18), transparent 70%);
+  }
+  body::after{
+    width:420px; height:420px; bottom:-140px; right:-120px;
+    background: radial-gradient(circle, rgba(122,92,74,0.15), transparent 70%);
+  }
+
+  section{
+    position:relative;
+    min-height:100vh;
+    display:flex; flex-direction:column;
+    align-items:center; justify-content:center;
+    padding: 6vh 6vw;
+    text-align:center;
+    z-index:3;
+  }
+
+  /* ---------- Intro ---------- */
+  #reveal-wrap{ display:none; }
+  #reveal-wrap.show{ display:flex; }
+  #intro.hide{ display:none; }
+
+  .bear-svg{
+    width: 170px; height:170px;
+    filter: drop-shadow(0 16px 22px rgba(122,92,74,0.25));
+    margin-bottom: 30px;
+    cursor:pointer;
+    -webkit-tap-highlight-color: transparent;
+    transition: transform .3s ease;
+    animation: bearFloat 3.6s ease-in-out infinite;
+  }
+  .bear-svg:hover{ transform: scale(1.04); }
+  .bear-svg:focus-visible{ outline: 3px solid var(--terracotta); outline-offset: 8px; border-radius: 50%; }
+  @keyframes bearFloat{
+    0%,100%{ transform: translateY(0); }
+    50%{ transform: translateY(-8px); }
+  }
+
+  .intro-text{
+    font-family:'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: clamp(1.6rem, 4.5vw, 2.4rem);
+    color: var(--ink);
+    margin-bottom: 10px;
+  }
+  .intro-sub{
+    font-size: 0.85rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+  }
+
+  /* ---------- Message card ---------- */
+  .card-inner{
+    background: rgba(255,255,255,0.75);
+    border: 1px solid rgba(169,106,78,0.3);
+    box-shadow: 0 28px 70px -26px rgba(122,92,74,0.35);
+    border-radius: 10px;
+    padding: 46px 34px;
+    max-width: 520px; width: 88vw;
+    position:relative;
+  }
+  .card-inner::before, .card-inner::after{
+    content:""; position:absolute; width:26px; height:26px; border: 1.5px solid var(--terracotta-deep);
+    opacity:0.7;
+  }
+  .card-inner::before{ top:10px; left:10px; border-right:none; border-bottom:none; }
+  .card-inner::after{ bottom:10px; right:10px; border-left:none; border-top:none; }
+
+  .mini-bears{ width: 60px; height:60px; margin-bottom: 20px; opacity:0.9; }
+
+  .memory-photo{
+    width: 100%;
+    max-height: 320px;
+    object-fit: cover;
+    border-radius: 6px;
+    margin-top: 26px;
+    border: 1px solid rgba(169,106,78,0.35);
+    box-shadow: 0 14px 34px -14px rgba(122,92,74,0.4);
+  }
+
+  .type-text{
+    font-family:'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: clamp(1.3rem, 3.2vw, 1.7rem);
+    line-height: 1.6;
+    color: var(--ink);
+    min-height: 110px;
+  }
+  .type-cursor{ display:inline-block; width:2px; background: var(--terracotta-deep); margin-left:2px; animation: blink 0.9s steps(1) infinite; }
+  @keyframes blink{ 50%{ opacity:0; } }
+
+  .sig-name{
+    font-family:'Cormorant Garamond', serif;
+    font-size: 1.3rem; color: var(--terracotta-deep);
+    margin-top: 26px; text-align:right;
+    opacity:0; transition: opacity 1s ease;
+  }
+  .sig-name.show{ opacity:1; }
+
+  ::selection{ background: var(--terracotta); color:#fff; }
+</style>
+</head>
+<body>
+
+<!-- INTRO -->
+<section id="intro">
+  <svg class="bear-svg" id="bearBtn" tabindex="0" role="button" aria-label="Abrir mensaje" viewBox="0 0 200 200">
+    <!-- brown bear (back) -->
+    <ellipse cx="128" cy="120" rx="46" ry="52" fill="#B98A6A"/>
+    <circle cx="150" cy="72" r="15" fill="#B98A6A"/>
+    <circle cx="106" cy="70" r="13" fill="#B98A6A"/>
+    <!-- white bear (front, hugging) -->
+    <ellipse cx="82" cy="122" rx="50" ry="56" fill="#FBF3EA" stroke="#4A3B31" stroke-width="2.2"/>
+    <circle cx="58" cy="70" r="16" fill="#FBF3EA" stroke="#4A3B31" stroke-width="2.2"/>
+    <circle cx="100" cy="66" r="12" fill="#FBF3EA" stroke="#4A3B31" stroke-width="2.2"/>
+    <circle cx="55" cy="72" r="2.6" fill="#4A3B31"/>
+    <!-- white bear arms hugging -->
+    <ellipse cx="118" cy="132" rx="16" ry="24" fill="#FBF3EA" stroke="#4A3B31" stroke-width="2" transform="rotate(20 118 132)"/>
+    <ellipse cx="46" cy="140" rx="15" ry="22" fill="#FBF3EA" stroke="#4A3B31" stroke-width="2" transform="rotate(-15 46 140)"/>
+    <!-- brown bear arm over white bear -->
+    <ellipse cx="98" cy="108" rx="14" ry="20" fill="#B98A6A" transform="rotate(35 98 108)"/>
+  </svg>
+
+  <p class="intro-text">Tengo algo que decirte...</p>
+  <p class="intro-sub">toca para abrir</p>
+</section>
+
+<!-- REVEAL -->
+<section id="reveal-wrap">
+  <div class="card-inner">
+    <svg class="mini-bears" viewBox="0 0 200 200">
+      <ellipse cx="128" cy="120" rx="46" ry="52" fill="#B98A6A"/>
+      <circle cx="150" cy="72" r="15" fill="#B98A6A"/>
+      <circle cx="106" cy="70" r="13" fill="#B98A6A"/>
+      <ellipse cx="82" cy="122" rx="50" ry="56" fill="#FBF3EA" stroke="#4A3B31" stroke-width="2.2"/>
+      <circle cx="58" cy="70" r="16" fill="#FBF3EA" stroke="#4A3B31" stroke-width="2.2"/>
+      <circle cx="100" cy="66" r="12" fill="#FBF3EA" stroke="#4A3B31" stroke-width="2.2"/>
+      <circle cx="55" cy="72" r="2.6" fill="#4A3B31"/>
+      <ellipse cx="118" cy="132" rx="16" ry="24" fill="#FBF3EA" stroke="#4A3B31" stroke-width="2" transform="rotate(20 118 132)"/>
+      <ellipse cx="46" cy="140" rx="15" ry="22" fill="#FBF3EA" stroke="#4A3B31" stroke-width="2" transform="rotate(-15 46 140)"/>
+      <ellipse cx="98" cy="108" rx="14" ry="20" fill="#B98A6A" transform="rotate(35 98 108)"/>
+    </svg>
+    <p class="type-text" id="typeText"><span class="type-cursor">&nbsp;</span></p>
+    <img class="memory-photo" src="foto.png" alt="Un recuerdo de nosotros">
+    <div class="sig-name" id="sigName">— Lenin</div>
+  </div>
+</section>
+
+<script>
+const bearBtn = document.getElementById('bearBtn');
+const introSection = document.getElementById('intro');
+const revealWrap = document.getElementById('reveal-wrap');
+const typeText = document.getElementById('typeText');
+const sigName = document.getElementById('sigName');
+
+const finalMessage = "Bienvenida de vuelta. Dije que te debía un abrazo y los compromisos se cumplen.";
+
+function startTypewriter(){
+  let i = 0;
+  typeText.innerHTML = '<span class="type-cursor">&nbsp;</span>';
+  const interval = setInterval(()=>{
+    i++;
+    typeText.innerHTML = finalMessage.slice(0,i) + '<span class="type-cursor">&nbsp;</span>';
+    if(i >= finalMessage.length){
+      clearInterval(interval);
+      setTimeout(()=>{ sigName.classList.add('show'); }, 400);
+    }
+  }, 40);
+}
+
+function openMessage(){
+  bearBtn.removeEventListener('click', openMessage);
+  introSection.classList.add('hide');
+  revealWrap.classList.add('show');
+  startTypewriter();
+}
+
+bearBtn.addEventListener('click', openMessage);
+bearBtn.addEventListener('keydown', (e)=>{
+  if(e.key === 'Enter' || e.key === ' '){ e.preventDefault(); openMessage(); }
+});
+</script>
+
+</body>
+</html>
